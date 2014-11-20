@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+	<meta charset="UTF-8">
+	<title>Fuck Ajax</title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport"
+	content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<meta name="format-detection" content="telephone=no">
+	<meta name="renderer" content="webkit">
+	<meta http-equiv="Cache-Control" content="no-siteapp"/>
+	<link rel="alternate icon" type="image/png" href="image/favicon.png">
+	<link rel="stylesheet" href="assets/css/amazeui.min.css"/>
+	<style>
+	.get {
+		background: #1E5B94;
+		color: #fff;
+		text-align: center;
+		padding: 100px 0;
+	}
+
+	.get-title {
+		font-size: 200%;
+		border: 2px solid #fff;
+		padding: 20px;
+		display: inline-block;
+	}
+
+	.manybooks {
+		background: #0bb59b;
+		padding: 50px 0;
+	}
+
+	.book{
+		padding: 20px 20px;		
+		background-color: #fff;
+		margin-bottom: 20px;
+	}
+	#loadpic{
+		position:fixed;
+		right:50%;
+		bottom:80px;
+	}
+	.footer p {
+		color: #7f8c8d;
+		margin: 0;
+		padding: 15px 0;
+		text-align: center;
+		background: #2d3e50;
+	}
+	</style>
+</head>
+<body>
+	<header class="am-topbar am-topbar-fixed-top">
+		<div class="am-container">
+			<h1 class="am-topbar-brand">
+				<span>图书测试</span>
+			</h1>
+
+			<button class="am-topbar-btn am-topbar-toggle am-btn am-btn-sm am-btn-secondary am-show-sm-only"
+			data-am-collapse="{target: '#collapse-head'}"><span class="am-sr-only">导航切换</span> <span
+			class="am-icon-bars"></span></button>
+			<div class="am-collapse am-topbar-collapse" id="collapse-head">
+				<ul class="am-nav am-nav-pills am-topbar-nav">
+					<li><a href="http://xduclasshelper.sinaapp.com/other/aboutMe/">关于作者</a></li>
+				</ul>
+			</div>
+		</div>
+	</header>
+
+	<div class="get">
+		<div class="am-g">
+			<div class="col-lg-12">
+				<h1 class="get-title">测试图书获取页</h1>
+
+			</div>
+		</div>
+	</div>
+
+
+
+	<div class="manybooks">
+		<div class="am-g am-container" id="appended">
+			<div class="book am-animation-scale-up"><h1>PHP: The Good Parts</h1><h3>Delivering the Best of PHP</h3><p>Get past all the hype about PHP and dig into the real power of the language. This book explores the most useful features of PHP and how they can speed up the web development process, and explains why the most commonly used PHP elements are often misu ...</p><img src="http://s.it-ebooks-api.info/3/php_the_good_parts.jpg"><br><span>isbn:9780596804374</span></div>
+		</div>
+	</div>
+
+
+
+	<footer class="footer">
+		<p>
+			© 2014 Arted by <a href="http://xduclasshelper.sinaapp.com/other/aboutMe/">Jayus</a>
+		</p>
+	</footer>
+	<script src="assets/js/zepto.min.js"></script>
+	<script src="assets/js/amazeui.min.js"></script>
+	<script type="text/javascript">
+	$(function(){
+		page=1;
+		window.onscroll=function(event) {
+
+			scrollTop=document.body.scrollTop;
+			viewH=document.documentElement.clientHeight;
+			contentH =document.body.scrollHeight;
+
+
+			//到达底部100px时,加载新内容
+			if(contentH-(viewH+scrollTop)==0){
+
+				if ($("#loadpic").length==0) {
+					$("#appended").append("<div id=\"loadpic\"><span class=\"am-icon-cog am-animation-spin\"></span></div>");
+				}
+				$.getJSON(
+					'http://it-ebooks-api.info/v1/search/javascript/page/'+page,
+					{param1: 'value1'},
+					function(searchResults, textStatus) {
+						if ($("#loadpic").length!=0) {
+							$("#loadpic").remove();
+						}
+						var books=searchResults['Books'];
+						$.each(books, function(index, book) {
+							var Title=book['Title'];
+							var SubTitle=book['SubTitle'];
+							var Description=book['Description'];
+							var Image=book['Image'];
+							var isbn=book['isbn'];
+							var insertHtml="<div class=\"book am-animation-scale-up\"><h1>"+Title+"</h1><h3>"+SubTitle+"</h3><p>"+Description+"</p><img src=\""+Image+"\"><br><span>isbn:"+isbn+"</span></div>"
+							$("#appended").append(insertHtml);
+						});
+						page=page+5;
+					}
+				);
+
+			}
+
+		}
+	});
+	function clickImg2(){
+		var sdiv = document.getElementById("sdiv");
+		sdiv.style.webkitTransform = "rotateX(0deg)";
+	}
+	</script>
+</body>
+</html>
